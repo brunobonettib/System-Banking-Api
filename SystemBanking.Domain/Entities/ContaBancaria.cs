@@ -43,27 +43,29 @@ namespace SystemBanking.Domain.Entities
         {
             if (valor <= 0)
                 throw new ArgumentException(
-                    "Valor inválido.");
+                    "O valor do depósito deve ser maior que zero.",
+                    nameof(valor));
 
             Saldo += valor;
 
             _transacoes.Add(
-        new Transacao(
-            Id,
-            valor,
-            TipoTransacao.Deposito,
-            "Depósito realizado"));
+                new Transacao(
+                    Id,
+                    valor,
+                    TipoTransacao.Deposito,
+                    "Depósito realizado"));
         }
 
         public void Sacar(decimal valor)
         {
             if (valor <= 0)
                 throw new ArgumentException(
-                    "Valor inválido.");
+                    "O valor do saque deve ser maior que zero.",
+                    nameof(valor));
 
             if (valor > Saldo)
                 throw new InvalidOperationException(
-                    "Saldo insuficiente.");
+                    "Saldo insuficiente para realizar o saque.");
 
             Saldo -= valor;
 
