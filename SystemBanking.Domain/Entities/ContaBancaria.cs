@@ -25,6 +25,13 @@ namespace SystemBanking.Domain.Entities
 
         public ContaBancaria(string numeroConta, Cliente cliente)
         {
+            if (string.IsNullOrWhiteSpace(numeroConta))
+                throw new ArgumentException(
+                    "Número da conta é obrigatório.",
+                    nameof(numeroConta));
+
+            if (cliente is null)
+                throw new ArgumentNullException(nameof(cliente));
             Id = Guid.NewGuid();
             NumeroConta = numeroConta;
             Cliente = cliente;
