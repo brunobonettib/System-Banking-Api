@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using SystemBanking.Domain.Enums;
 
 namespace SystemBanking.Domain.Entities
@@ -21,7 +17,7 @@ namespace SystemBanking.Domain.Entities
         private readonly List<Transacao> _transacoes = [];
 
         public IReadOnlyCollection<Transacao> Transacoes =>
-        _transacoes.AsReadOnly();
+            _transacoes.AsReadOnly();
 
         public ContaBancaria(string numeroConta, Cliente cliente)
         {
@@ -32,6 +28,7 @@ namespace SystemBanking.Domain.Entities
 
             if (cliente is null)
                 throw new ArgumentNullException(nameof(cliente));
+
             Id = Guid.NewGuid();
             NumeroConta = numeroConta;
             Cliente = cliente;
@@ -48,12 +45,10 @@ namespace SystemBanking.Domain.Entities
 
             Saldo += valor;
 
-            _transacoes.Add(
-                new Transacao(
-                    Id,
-                    valor,
-                    TipoTransacao.Deposito,
-                    "Depósito realizado"));
+            RegistrarTransacao(
+                valor,
+                TipoTransacao.Deposito,
+                "Depósito realizado");
         }
 
         public void Sacar(decimal valor)
@@ -69,25 +64,57 @@ namespace SystemBanking.Domain.Entities
 
             Saldo -= valor;
 
-            _transacoes.Add(
-        new Transacao(
-            Id,
-            valor,
-            TipoTransacao.Saque,
-            "Saque realizado"));
+            RegistrarTransacao(
+                valor,
+                TipoTransacao.Saque,
+                "Saque realizado");
         }
 
-        public void Transferir(
-            decimal valor,
-            ContaBancaria destino)
+        public void Transferir(decimal valor, ContaBancaria destino)
         {
             if (destino is null)
-                throw new ArgumentNullException(
-                    nameof(destino));
+                throw new ArgumentNullException(nameof(destino));
 
-            Sacar(valor);
+            if (valor <= 0)
+                throw new ArgumentException(
+                    "O valor da transferência deve ser maior que zero.",
+                    nameof(valor));
 
-            destino.Depositar(valor);
+            if (valor > Saldo)
+                throw new InvalidOperationException(
+                    "Saldo insuficiente para realizar a transferência.");
+
+            Saldo -= valor;
+
+            RegistrarTransacao(
+                valor,
+                TipoTransacao.Transferencia,
+                $"Transferência enviada para a conta {destino.NumeroConta}");
+
+            destino.ReceberTransferencia(valor, NumeroConta);
+        }
+
+        private void ReceberTransferencia(decimal valor, string numeroContaOrigem)
+        {
+            Saldo += valor;
+
+            RegistrarTransacao(
+                valor,
+                TipoTransacao.Transferencia,
+                $"Transferência recebida da conta {numeroContaOrigem}");
+        }
+
+        private void RegistrarTransacao(
+            decimal valor,
+            TipoTransacao tipo,
+            string descricao)
+        {
+            _transacoes.Add(
+                new Transacao(
+                    Id,
+                    valor,
+                    tipo,
+                    descricao));
         }
     }
 }
