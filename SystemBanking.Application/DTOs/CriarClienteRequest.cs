@@ -7,6 +7,6 @@ namespace SystemBanking.Application.DTOs
 {
     public record CriarClienteRequest(string Nome, string Documento)
     {
-    
+
     }
 }
