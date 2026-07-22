@@ -7,6 +7,6 @@ namespace SystemBanking.Application.DTOs
 {
     public record ClienteResponse(Guid Id, string Nome, string Documento)
     {
-        
+
     }
 }

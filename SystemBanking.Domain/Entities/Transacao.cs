@@ -20,7 +20,7 @@ namespace SystemBanking.Domain.Entities
 
         public string Descricao { get; private set; }
 
-        public Transacao( Guid contaBancariaId, decimal valor, TipoTransacao tipo,string descricao)
+        public Transacao(Guid contaBancariaId, decimal valor, TipoTransacao tipo, string descricao)
         {
             Id = Guid.NewGuid();
             ContaBancariaId = contaBancariaId;
