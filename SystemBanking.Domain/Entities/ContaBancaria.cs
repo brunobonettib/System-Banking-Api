@@ -84,6 +84,10 @@ namespace SystemBanking.Domain.Entities
                 throw new InvalidOperationException(
                     "Saldo insuficiente para realizar a transferência.");
 
+            if (destino.Id == Id)
+                throw new InvalidOperationException(
+                    "A conta de destino deve ser diferente da conta de origem.");
+
             Saldo -= valor;
 
             RegistrarTransacao(
