@@ -139,7 +139,7 @@ public class CadastrarClienteHandlerTests
         var unitOfWorkMock = new Mock<IUnitOfWork>();
 
         var request = new CadastrarClienteRequest(
-            "Bruno Bonetti",
+            "Cliente Teste",
             "12345678900");
 
         using var cancellationTokenSource =
